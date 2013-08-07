@@ -1,6 +1,9 @@
+/* global define */
 define([], function () {
-  var WIDTH
-    , HEIGHT;
+  'use strict';
+
+  var WIDTH;
+  var HEIGHT;
 
   function init(options) {
     WIDTH  = options.WIDTH  || 1440;

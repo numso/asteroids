@@ -1,4 +1,4 @@
-/*global console, require */
+/*global require, THREE */
 
 require.config({
   paths: {
@@ -24,8 +24,10 @@ require([
   'views/gameManager',
 ], function (
   $,
-  mainMenu
+  MainMenu
 ) {
+  'use strict';
+
   // setup all the models
   var models = {
     bullet:   { url: 'models/bullet.js',   hasFour: false },
@@ -37,7 +39,7 @@ require([
 
   // load the models
   loadModels(models, function () {
-    var main = new mainMenu();
+    var main = new MainMenu();
     main.setModels(models);
     main.initGame();
     $('.wrapper').html(main.render().el);
@@ -47,6 +49,8 @@ require([
 
 // helper function
 function loadModels(models, cb) {
+  'use strict';
+
   var loader = new THREE.JSONLoader(false);
 
   // set the count
@@ -54,9 +58,9 @@ function loadModels(models, cb) {
   for (var key in models) ++count;
 
   // load all the models
-  for (var key in models) {
+  for (key in models) {
     (function (myModel) {
-      loader.load(myModel.url, function (geometry, materials) {
+      loader.load(myModel.url, function (geometry) {
         myModel.geometry = geometry;
         done();
       });
@@ -68,7 +72,7 @@ function loadModels(models, cb) {
   models.player.material   = new THREE.MeshBasicMaterial({ map: THREE.ImageUtils.loadTexture('models/c1_01_02_01_04.jpg') });
   models.player2.material  = new THREE.MeshBasicMaterial({ map: THREE.ImageUtils.loadTexture('models/c3_12.jpg') });
   models.enemy.material    = new THREE.MeshBasicMaterial({ map: THREE.ImageUtils.loadTexture('models/_Vinyl_Gray_3.jpg') });
-  models.bullet.material   = new THREE.MeshBasicMaterial({ map: THREE.ImageUtils.loadTexture('models/bullet.jpg') })
+  models.bullet.material   = new THREE.MeshBasicMaterial({ map: THREE.ImageUtils.loadTexture('models/bullet.jpg') });
   done();
 
   // provide async capability

@@ -1,21 +1,23 @@
+/* global define, $, THREE */
 define([
   'game/shared'
 ], function (
   shared
 ) {
-  var WIDTH
-    , HEIGHT
-    , SPEED         = 3
-    , NUM_ASTEROIDS = 2;
+  'use strict';
+
+  var WIDTH;
+  var HEIGHT;
+  var SPEED         = 3;
+  var NUM_ASTEROIDS = 2;
 
   var asteroidModel;
 
-  var score
-    , scene
-    , asteroids = []
-    , level = 1
-    , p1Score = 0
-    , p2Score = 0;
+  var scene;
+  var asteroids = [];
+  var level = 1;
+  var p1Score = 0;
+  var p2Score = 0;
 
   function init(options) {
     WIDTH  = options.WIDTH  || 1440;
@@ -28,21 +30,23 @@ define([
     }
   }
 
-  function nextLevel(){
-    if(level <= 12)
+  function nextLevel() {
+    if (level <= 12)
       ++level;
 
     $('.level').html('Level: ' + level);
 
-    if(level % 2 != 0 && level < 12)
+    if (level % 2 !== 0 && level < 12)
       ++NUM_ASTEROIDS;
 
-    for(var n = 0; n < NUM_ASTEROIDS; ++n){
+    for (var n = 0; n < NUM_ASTEROIDS; ++n) {
       createAsteroid();
     }
   }
 
   function createAsteroid(x, y, scale) {
+    var safeRadius;
+
     var mesh  = new THREE.Mesh(asteroidModel.geometry.clone(), asteroidModel.material);
     var mesh2 = new THREE.Mesh(asteroidModel.geometry.clone(), asteroidModel.material);
     var mesh3 = new THREE.Mesh(asteroidModel.geometry.clone(), asteroidModel.material);
@@ -51,20 +55,18 @@ define([
     if (x !== undefined) {
       mesh.position.x = x;
     } else {
-      var safeRadius = 150;
-      mesh.position.x = safeRadius + Math.random() * (WIDTH / 2 - safeRadius)
-      mesh.position.x = Math.random() > .5 ? mesh.position.x : -mesh.position.x;
+      safeRadius = 150;
+      mesh.position.x = safeRadius + Math.random() * (WIDTH / 2 - safeRadius);
+      mesh.position.x = Math.random() > 0.5 ? mesh.position.x : -mesh.position.x;
     }
 
     if (y !== undefined) {
       mesh.position.y = y;
     } else {
-      var safeRadius = 150;
-      mesh.position.y = safeRadius + Math.random() * (HEIGHT / 2 - safeRadius)
-      mesh.position.y = Math.random() > .5 ? mesh.position.y : -mesh.position.y;
+      safeRadius = 150;
+      mesh.position.y = safeRadius + Math.random() * (HEIGHT / 2 - safeRadius);
+      mesh.position.y = Math.random() > 0.5 ? mesh.position.y : -mesh.position.y;
     }
-
-    console.log(mesh.position.x, mesh.position.y);
 
     // mesh.position.x = x !== undefined ? x : (Math.random() - .5) * WIDTH;
     // mesh.position.y = y !== undefined ? y : (Math.random() - .5) * HEIGHT;
@@ -80,7 +82,7 @@ define([
     mesh3.position.x = mesh3.position.y = -1000;
     mesh4.position.x = mesh4.position.y = -1000;
 
-    mesh.geometry.boundingSphere.radius -= .2;
+    mesh.geometry.boundingSphere.radius -= 0.2;
 
     scene.add(mesh);
     scene.add(mesh2);
@@ -92,10 +94,10 @@ define([
 
   function makeAsteroidObject(meshes) {
     return {
-      rotX:   (Math.random() - .5) / 50,
-      rotY:   (Math.random() - .5) / 50,
-      dx:     (Math.random() - .5) * SPEED,
-      dy:     (Math.random() - .5) * SPEED,
+      rotX:   (Math.random() - 0.5) / 50,
+      rotY:   (Math.random() - 0.5) / 50,
+      dx:     (Math.random() - 0.5) * SPEED,
+      dy:     (Math.random() - 0.5) * SPEED,
       meshes: meshes
     };
   }
@@ -117,8 +119,8 @@ define([
   function checkBullet(bullet) {
     for (var i = 0; i < asteroids.length; ++i) {
       if (shared.collides(asteroids[i].meshes[0], bullet.mesh)) {
-        var oldX = asteroids[i].meshes[0].position.x
-          , oldY = asteroids[i].meshes[0].position.y;
+        var oldX = asteroids[i].meshes[0].position.x;
+        var oldY = asteroids[i].meshes[0].position.y;
 
         updateScore(asteroids[i].meshes[0].scale.x, bullet.playerNum);
         hitAsteroid(i);
@@ -130,9 +132,9 @@ define([
 
   function updateScore(size, playerNum) {
     var score;
-    if(playerNum == 1)
+    if (playerNum == 1)
       score = p1Score;
-    if(playerNum == 2)
+    if (playerNum == 2)
       score = p2Score;
 
     if (size == 120)
@@ -144,12 +146,12 @@ define([
     if (size == 30)
       score += 50;
 
-    if(playerNum == 1){
-      $('.p1.score').html("Score: " + score);
+    if (playerNum == 1) {
+      $('.p1.score').html('Score: ' + score);
       p1Score = score;
     }
-    if(playerNum == 2){
-      $('.p2.score').html("Score: " + score);
+    if (playerNum == 2) {
+      $('.p2.score').html('Score: ' + score);
       p2Score = score;
     }
   }
@@ -163,7 +165,7 @@ define([
       }
       asteroids.splice(i, 1);
 
-      if(asteroids.length == 0)
+      if (asteroids.length === 0)
         nextLevel();
       return;
     }
@@ -172,8 +174,8 @@ define([
 
     var speed = SPEED * 4 - newScale / 10;
 
-    asteroids[i].dx = (Math.random() - .5) * speed;
-    asteroids[i].dy = (Math.random() - .5) * speed;
+    asteroids[i].dx = (Math.random() - 0.5) * speed;
+    asteroids[i].dy = (Math.random() - 0.5) * speed;
 
     createAsteroid(asteroids[i].meshes[0].position.x, asteroids[i].meshes[0].position.y, newScale);
   }
@@ -182,8 +184,8 @@ define([
     asteroidModel = models.asteroid;
   }
 
-  function checkShip(shipObj){
-    for(var n = 0; n < asteroids.length; ++n){
+  function checkShip(shipObj) {
+    for (var n = 0; n < asteroids.length; ++n) {
       if (shared.collides(asteroids[n].meshes[0], shipObj))
         return true;
     }
@@ -215,7 +217,7 @@ define([
     setModels:   setModels,
     checkBullet: checkBullet,
     checkShip:   checkShip,
-    getScores:   function (){return{p1: p1Score, p2: p2Score};},
+    getScores:   function () { return {p1: p1Score, p2: p2Score }; },
     getAsteroidData: getAsteroidData
   };
 });

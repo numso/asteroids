@@ -1,17 +1,21 @@
-define([
-  'game/shared',
-  'game/enemy'
-], function (
-  shared,
-  enemy
-) {
-  var WIDTH
-    , HEIGHT
-    , BULLET_SPEED = 15;
+/* global define, THREE */
 
-  var scene
-    , bulletModel
-    , bullets = [];
+define([
+  'game/shared'
+  // 'game/enemy'
+], function (
+  shared
+  // enemy
+) {
+  'use strict';
+
+  var WIDTH;
+  var HEIGHT;
+  var BULLET_SPEED = 15;
+
+  var scene;
+  var bulletModel;
+  var bullets = [];
 
   function init(options) {
     WIDTH  = options.WIDTH  || 1440;
@@ -22,7 +26,8 @@ define([
 
   function update(data) {
     var toDestroy = [];
-    for (var i = 0; i < data.length; ++i) {
+    var i;
+    for (i = 0; i < data.length; ++i) {
       bullets[i].mesh.position.x = data[i].x;
       bullets[i].mesh.position.y = data[i].y;
       bullets[i].life = data[i].life;
@@ -32,7 +37,7 @@ define([
       }
     }
 
-    for (var i = 0; i < toDestroy.length; ++i) {
+    for (i = 0; i < toDestroy.length; ++i) {
       destroyBullet(toDestroy[i]);
     }
   }
@@ -48,9 +53,9 @@ define([
     }
   }
 
-  function checkEnemyCollision(player){
-    for(var n = 0; n < bullets.length; ++n){
-      if(shared.collides(bullets[n].mesh, player) && bullets[n].playerNum == 3){
+  function checkEnemyCollision(player) {
+    for (var n = 0; n < bullets.length; ++n) {
+      if (shared.collides(bullets[n].mesh, player) && bullets[n].playerNum == 3) {
         destroyBullet(n);
         --n;
         return true;

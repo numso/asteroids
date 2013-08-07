@@ -1,4 +1,6 @@
+/* global define, THREE */
 define([], function () {
+  'use strict';
 
   return {
     init:                initEffects,
@@ -10,38 +12,48 @@ define([], function () {
   };
 });
 
-var PARTICLE_COUNT  = 1200
-  , PARTICLE_SPREAD = 10;
+var PARTICLE_COUNT  = 1200;
+var PARTICLE_SPREAD = 10;
 
 var systems     = [];
 
-var explosions      = []
-  , explosionsCount = 0;
+var explosions      = [];
+var explosionsCount = 0;
 
 var prop1, prop2;
 
-var asteroidParts      = []
-  , asteroidPartsCount = 0;
+var asteroidParts      = [];
+var asteroidPartsCount = 0;
 
 function createExplosion(x, y) {
+  'use strict';
+
   resetExplosion(explosions[explosionsCount], x, y);
   if (++explosionsCount >= explosions.length) explosionsCount = 0;
 }
 
 function createPropulsion(x, y, rot) {
+  'use strict';
+
   resetPropulsion(prop1, x, y, rot, 60);
 }
 
 function createPropulsion2(x, y, rot) {
+  'use strict';
+
   resetPropulsion(prop2, x, y, rot, 20);
 }
 
 function createAsteroidParts(x, y, rot) {
+  'use strict';
+
   resetAsteroidParts(asteroidParts[asteroidPartsCount], x, y, rot);
   if (++asteroidPartsCount >= asteroidParts.length) asteroidPartsCount = 0;
 }
 
 function resetPropulsion(system, x, y, rot, aoeu) {
+  'use strict';
+
   system.material.opacity = 1;
   system.position.x = x - Math.sin(rot) * aoeu;
   system.position.y = y + Math.cos(rot) * aoeu;
@@ -49,10 +61,16 @@ function resetPropulsion(system, x, y, rot, aoeu) {
 }
 
 function initEffects(scene) {
+  'use strict';
+
+  var i;
+  var system;
+  var system2;
+
   // create explosions
-  for (var i = 0; i < 3; ++i) {
-    var system  = createSystem(PARTICLE_COUNT,   0xFFAA00, { spread: PARTICLE_SPREAD });
-    var system2 = createSystem(PARTICLE_COUNT/2, 0xFF0000, { spread: PARTICLE_SPREAD/2 });
+  for (i = 0; i < 3; ++i) {
+    system  = createSystem(PARTICLE_COUNT,   0xFFAA00, { spread: PARTICLE_SPREAD });
+    system2 = createSystem(PARTICLE_COUNT/2, 0xFF0000, { spread: PARTICLE_SPREAD/2 });
     scene.add(system);
     scene.add(system2);
 
@@ -62,41 +80,43 @@ function initEffects(scene) {
   }
 
   // create asteroid explosion
-  for (var i = 0; i < 10; ++i) {
-    var system = createSystem(PARTICLE_COUNT/2, 0x00FF00, { spread: PARTICLE_SPREAD }); // RGB(130, 126, 99)
+  for (i = 0; i < 10; ++i) {
+    system = createSystem(PARTICLE_COUNT/2, 0x00FF00, { spread: PARTICLE_SPREAD }); // RGB(130, 126, 99)
     scene.add(system);
     asteroidParts.push(system);
     systems.push([system]);
   }
 
   // create propulsion
-  prop1 = createSystem(PARTICLE_COUNT / 16, 0xFFAA00, { xRange: 25, initialVelocityY: 10, maxVelocityY: 100, burnOut: .1 });
+  prop1 = createSystem(PARTICLE_COUNT / 16, 0xFFAA00, { xRange: 25, initialVelocityY: 10, maxVelocityY: 100, burnOut: 0.1 });
   scene.add(prop1);
   systems.push([prop1]);
 
-  prop2 = createSystem(PARTICLE_COUNT / 16, 0xFFAA00, { xRange: 25, initialVelocityY: 10, maxVelocityY: 100, burnOut: .1 });
+  prop2 = createSystem(PARTICLE_COUNT / 16, 0xFFAA00, { xRange: 25, initialVelocityY: 10, maxVelocityY: 100, burnOut: 0.1 });
   scene.add(prop2);
   systems.push([prop2]);
 }
 
 function createSystem(count, color, options) {
-  var particles = new THREE.Geometry()
-    , pMaterial = new THREE.ParticleBasicMaterial({
-        color: color,
-        opacity: 0,
-        size: 10,
-        map: THREE.ImageUtils.loadTexture('/img/particle.png'),
-        blending: THREE.AdditiveBlending,
-        transparent: true,
-        sizeAttenuation: false
-      });
+  'use strict';
+
+  var particles = new THREE.Geometry();
+  var pMaterial = new THREE.ParticleBasicMaterial({
+    color: color,
+    opacity: 0,
+    size: 10,
+    map: THREE.ImageUtils.loadTexture('/img/particle.png'),
+    blending: THREE.AdditiveBlending,
+    transparent: true,
+    sizeAttenuation: false
+  });
 
   for (var p = 0; p < count; p++) {
     var particle = new THREE.Vector3(0, 0, 0);
     particle.velocity = new THREE.Vector3(0, 0, 0);
 
     if (options.xRange) {
-      particle.x = (Math.random() - .5) * options.xRange;
+      particle.x = (Math.random() - 0.5) * options.xRange;
     }
 
     if (options.initialVelocityY) {
@@ -118,6 +138,8 @@ function createSystem(count, color, options) {
 }
 
 function resetAsteroidParts(system, x, y, rot) {
+  'use strict';
+
   var particles = system.geometry;
   var spread = system.spread;
   var pCount = particles.vertices.length;
@@ -133,14 +155,16 @@ function resetAsteroidParts(system, x, y, rot) {
 
   function resetParticle(particle, odd) {
     particle.x = particle.y = 0;
-    var vel = Math.random() - .5
+    var vel = Math.random() - 0.5;
+
+    var rot2;
 
     if (odd) {
-      var rot2 = (Math.random() - .5) * 10 + rot;
+      rot2 = (Math.random() - 0.5) * 10 + rot;
       particle.velocity.x = vel * spread * -Math.sin(rot2);
       particle.velocity.y = vel * spread * Math.cos(rot2);
     } else {
-      var rot2 = (Math.random() - .5) * Math.PI/18 + rot;
+      rot2 = (Math.random() - 0.5) * Math.PI/18 + rot;
       particle.velocity.x = vel * spread * 2 * -Math.sin(rot2);
       particle.velocity.y = vel * spread * 2 * Math.cos(rot2);
     }
@@ -148,6 +172,8 @@ function resetAsteroidParts(system, x, y, rot) {
 }
 
 function resetExplosion(system, x, y) {
+  'use strict';
+
   for (var i = 0; i < system.length; ++i) {
     var particles = system[i].geometry;
     var spread = system[i].spread;
@@ -166,16 +192,18 @@ function resetExplosion(system, x, y) {
   function resetParticle(particle, spread) {
     var rot = Math.random() * 360;
     particle.x = particle.y = 0;
-    particle.velocity.x = (Math.random() - .5) * spread * Math.sin(rot);
-    particle.velocity.y = (Math.random() - .5) * spread * Math.cos(rot);
+    particle.velocity.x = (Math.random() - 0.5) * spread * Math.sin(rot);
+    particle.velocity.y = (Math.random() - 0.5) * spread * Math.cos(rot);
   }
 }
 
 function updateParticles() {
+  'use strict';
+
   for (var i = 0; i < systems.length; ++i) {
     for (var j = 0; j < systems[i].length; ++j) {
       if (systems[i][j].material.opacity <= 0) continue;
-      systems[i][j].material.opacity -= systems[i][j].burnOut || .01;
+      systems[i][j].material.opacity -= systems[i][j].burnOut || 0.01;
       var pCount = systems[i][j].geometry.vertices.length;
       while (pCount--) {
         var particle = systems[i][j].geometry.vertices[pCount];

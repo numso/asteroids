@@ -1,3 +1,4 @@
+/* global define, Howl, THREE, $, window */
 define([
   'game/input',
   'game/input2',
@@ -25,34 +26,36 @@ define([
   gSettingsTmpl,
   gameOverTmpl
 ) {
-  var WIDTH
-    , HEIGHT;
+  'use strict';
 
-  var player1model
-    , player2model
-    , enemyModel;
+  var WIDTH;
+  var HEIGHT;
 
-  var renderer
-    , camera
-    , scene
-    , ship
-    , ship2
-    , enemyShip;
+  var player1model;
+  var player2model;
+  var enemyModel;
 
-  var sounds = {}
-    , soundFlag = true;
+  var renderer;
+  var camera;
+  var scene;
+  var ship;
+  var ship2;
+  var enemyShip;
 
-  var gameFlag    = false
-    , pause       = false
-    , player1Flag = true
-    , player2Flag = true
-    , p1Lives = 3
-    , p2Lives = 3;
+  var sounds = {};
+  var soundFlag = true;
 
-  var asteroidWorker
-    , playerWorker
-    , player2Worker
-    , bulletsWorker;
+  var gameFlag    = false;
+  var pause       = false;
+  var player1Flag = true;
+  var player2Flag = true;
+  var p1Lives = 3;
+  var p2Lives = 3;
+
+  var asteroidWorker;
+  var playerWorker;
+  var player2Worker;
+  var bulletsWorker;
 
   function createSounds() {
     sounds.fire     = new Howl({ urls: ['./snd/fire.mp3'] });
@@ -70,8 +73,8 @@ define([
     shared.init(options);
     createWebWorkers();
 
-    var NEAR = 0.1
-      , FAR  = 10000;
+    var NEAR = 0.1;
+    var FAR  = 10000;
 
     var $container = $('#game');
     renderer = new THREE.WebGLRenderer();
@@ -112,7 +115,7 @@ define([
           myWorker.postMessage(data);
           listener = cb;
         }
-      }
+      };
     }());
 
     playerWorker = (function () {
@@ -127,7 +130,7 @@ define([
           myWorker.postMessage(data);
           listener = cb;
         }
-      }
+      };
     }());
 
     player2Worker = (function () {
@@ -142,7 +145,7 @@ define([
           myWorker.postMessage(data);
           listener = cb;
         }
-      }
+      };
     }());
 
     bulletsWorker = (function () {
@@ -157,7 +160,7 @@ define([
           myWorker.postMessage(data);
           listener = cb;
         }
-      }
+      };
     }());
 
     // playerWorker = new Worker('/js/workers/asteroid.js');
@@ -211,8 +214,18 @@ define([
   }
 
   function animate() {
+    function done() {
+      if (--THREADCOUNT === 0) {
+        bulletsManager.checkCollisions(asteroidsManager, function (x, y, rot) {
+          particles.createAsteroidParts(x, y, rot);
+          sounds.asteroid.play();
+        });
+        render();
+      }
+    }
+
     if (gameFlag) {
-      requestAnimationFrame(animate);
+      window.requestAnimationFrame(animate);
       if (!pause) {
         var THREADCOUNT = 2;
         if (player1Flag) ++THREADCOUNT;
@@ -247,16 +260,6 @@ define([
         particles.update();
 
         isGameOver();
-
-        function done() {
-          if (--THREADCOUNT === 0) {
-            bulletsManager.checkCollisions(asteroidsManager, function (x, y, rot) {
-              particles.createAsteroidParts(x, y, rot);
-              sounds.asteroid.play();
-            });
-            render();
-          }
-        }
       }
     }
   }
@@ -316,7 +319,7 @@ define([
       if(soundFlag)
         sounds.explode.play();
 
-      if (playerStr == ".p1") {
+      if (playerStr == '.p1') {
         if (p1Lives > 0) {
           player.setInvincible();
           --p1Lives;
@@ -325,9 +328,9 @@ define([
           player1Flag = false;
           scene.remove(mahShip);
         }
-        $('.p1.lives').html("Lives: " + p1Lives);
+        $('.p1.lives').html('Lives: ' + p1Lives);
       }
-      if (playerStr == ".p2") {
+      if (playerStr == '.p2') {
         if (p2Lives > 0) {
           player2.setInvincible();
           --p2Lives;
@@ -336,7 +339,7 @@ define([
           player2Flag = false;
           scene.remove(mahShip);
         }
-        $('.p2.lives').html("Lives: " + p2Lives);
+        $('.p2.lives').html('Lives: ' + p2Lives);
       }
     }
   }
@@ -380,7 +383,7 @@ define([
   }
 
   function isGameOver() {
-    if (player1Flag == false && player2Flag == false) {
+    if (!player1Flag && !player2Flag) {
       gameFlag = false;
       setTimeout(function () {
         if(soundFlag)
@@ -392,9 +395,9 @@ define([
 
       var scores = asteroidsManager.getScores();
       if (hsManager.check(scores.p1)) {
-        $('.gameOver').html(gameOverTmpl({ player: "Player 1", score: scores.p1 }));
+        $('.gameOver').html(gameOverTmpl({ player: 'Player 1', score: scores.p1 }));
       } else if(hsManager.check(scores.p2)) {
-        $('.gameOver').html(gameOverTmpl({ player: "Player 2", score: scores.p2 }));
+        $('.gameOver').html(gameOverTmpl({ player: 'Player 2', score: scores.p2 }));
       } else {
         $('.gameOver').html(gameOverTmpl({}));
       }

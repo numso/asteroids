@@ -1,22 +1,25 @@
+/* global define */
 define([], function () {
-  var ACCELERATION_RATE = .2
-    , TURN_RATE         = 4
-    , MAX_SPEED         = 20
-    , HEIGHT
-    , WIDTH;
+  'use strict';
 
-  var updateFourMeshes
-    , addBullet
-    , meshes = [];
+  var ACCELERATION_RATE = 0.2;
+  var TURN_RATE         = 4;
+  var MAX_SPEED         = 20;
+  var HEIGHT;
+  var WIDTH;
+
+  var updateFourMeshes;
+  var addBullet;
+  var meshes = [];
 
   var velocity = {
     dx: 0,
     dy: 0
   };
 
-  var invincible  = false
-  ,   timer       = 0
-  ,   visibleFlag = true;
+  var invincible  = false;
+  var timer       = 0;
+  var visibleFlag = true;
 
   function init(options) {
     WIDTH  = options.WIDTH  || 1440;
@@ -60,10 +63,10 @@ define([], function () {
   }
 
   function fire() {
-    addBullet(meshes[0].position.x, meshes[0].position.y, meshes[0].rotation.y, 1);
+    addBullet(meshes[0].position.x, meshes[0].position.y, meshes[0].rotation.y, 2);
   }
 
-  function get(){
+  function get() {
     return meshes[0];
   }
 
@@ -80,23 +83,24 @@ define([], function () {
     }];
   }
 
-  function addTime(){
+  function addTime() {
+    var n;
     timer += 10;
-    if (timer % 50 == 0) {
-      for(var n = 0; n < meshes.length; ++n)
+    if (timer % 50 === 0) {
+      for (n = 0; n < meshes.length; ++n)
         meshes[n].material.visible = visibleFlag;
       visibleFlag = !visibleFlag;
     }
 
-    if(timer > 2000){
+    if (timer > 2000) {
       invincible = false;
       timer = 0;
-      for(var n = 0; n < meshes.length; ++n)
+      for (n = 0; n < meshes.length; ++n)
         meshes[n].material.visible = true;
     }
   }
 
-  function resetPos(){
+  function resetPos() {
     meshes[0].position.x = meshes[0].position.y = velocity.dx = velocity.dy = 0;
   }
 
@@ -109,8 +113,8 @@ define([], function () {
     init:       init,
     get:        get,
     getPlayerData: getPlayerData,
-    getInvincible: function(){return invincible;},
-    setInvincible: function(){invincible = true; resetPos()},
+    getInvincible: function () { return invincible; },
+    setInvincible: function () { invincible = true; resetPos(); },
     addTime:    addTime
   };
 });

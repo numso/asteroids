@@ -1,7 +1,10 @@
-var WIDTH  = 1440
-  , HEIGHT = 700;
+/* global postMessage */
+var WIDTH  = 1440;
+var HEIGHT = 700;
 
 onmessage = function (event) {
+  'use strict';
+
   var data = event.data;
 
   for (var i = 0; i < data.length; ++i) {
@@ -16,6 +19,8 @@ onmessage = function (event) {
 };
 
 function checkBounds(data) {
+  'use strict';
+
   if (data.x < -WIDTH / 2)  data.x += WIDTH;
   if (data.x >  WIDTH / 2)  data.x -= WIDTH;
   if (data.y < -HEIGHT / 2) data.y += HEIGHT;

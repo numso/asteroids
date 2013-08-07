@@ -1,11 +1,14 @@
+/* global define, $ */
 define([], function () {
+  'use strict';
+
   var keys = {};
   var prevFire = false;
   var controls = [];
 
   $(document).keydown(function (e) {
-    for(var n = 0; n < controls.length; ++n){
-      if(controls[n] == e.keyCode)
+    for (var n = 0; n < controls.length; ++n) {
+      if (controls[n] == e.keyCode)
         keys[e.keyCode] = true;
     }
     if (e.keyCode === 32 || e.keyCode === 37 || e.keyCode === 38 || e.keyCode === 39) {
@@ -36,7 +39,7 @@ define([], function () {
     }
   }
 
-  function set(userControls){
+  function set(userControls) {
     controls = userControls;
     controls.push(27);
   }
@@ -48,6 +51,6 @@ define([], function () {
     pause:     function () { return keys[27]; },
     fire:      fire,
     resetKeys: reset,
-    set:       set,
+    set:       set
   };
 });

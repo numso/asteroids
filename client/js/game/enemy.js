@@ -1,27 +1,28 @@
+/* global define */
 define([], function () {
-  var ACCELERATION_RATE = .2
-    , TURN_RATE         = 4
-    , MAX_SPEED         = 10
-    , HEIGHT
-    , WIDTH;
+  'use strict';
 
-  var updateFourMeshes
-    , addBullet
-    , meshes = [];
+  // var ACCELERATION_RATE = 0.2;
+  // var TURN_RATE         = 4;
+  // var MAX_SPEED         = 10;
+  var HEIGHT;
+  var WIDTH;
+
+  var updateFourMeshes;
+  var addBullet;
+  var meshes = [];
 
   var velocity = {
     dx: 2,
     dy: 2
   };
 
-
-
-  var invincible = false
-  ,   timer      = 0
-  ,   shotTimer  = 0
-  ,   threshold
-  ,   startX
-  ,   startY;
+  // var invincible = false;
+  var timer      = 0;
+  var shotTimer  = 0;
+  var threshold;
+  var startX;
+  var startY;
 
   function init(options) {
     WIDTH  = options.WIDTH  || 700;
@@ -33,13 +34,13 @@ define([], function () {
 
     threshold = Math.floor(Math.random() * 30000 + 60000);
     startY = Math.random() * (HEIGHT - (HEIGHT * -1)) -HEIGHT;
-    startX;
-    if(startY < 300)
+    // startX;
+    if (startY < 300)
       startX = WIDTH + 100;
     else
       startX = -WIDTH - 100;
 
-    for(var n = 0; n < meshes.length; ++n){
+    for (var n = 0; n < meshes.length; ++n) {
       meshes[n].position.x = WIDTH + 100;
       meshes[n].position.y = startY;
     }
@@ -68,30 +69,32 @@ define([], function () {
   // }
 
   function update() {
-    if(timer > threshold){
+    if (timer > threshold) {
       move();
     }
     else
       timer += 20;
   }
 
-  function move(){
+  function move() {
+    var n;
+
     shotTimer += 10;
 
-    if(shotTimer > 3000){
+    if (shotTimer > 3000) {
       fire();
       shotTimer = 0;
     }
 
-    for(var n = 0; n < meshes.length; ++n){
+    for (n = 0; n < meshes.length; ++n) {
       meshes[n].position.x -= velocity.dx;
     }
 
-    if(meshes[0].position.x < (-startX) || meshes[0].position.x > (startX+1)){
+    if (meshes[0].position.x < (-startX) || meshes[0].position.x > (startX+1)) {
       velocity.dx *= -1;
       timer = 0;
       startY = Math.random() * (HEIGHT - (HEIGHT * -1)) -HEIGHT;
-      for(var n = 0; n < meshes.length; ++n)
+      for (n = 0; n < meshes.length; ++n)
         meshes[n].position.y = startY;
     }
   }
@@ -100,7 +103,7 @@ define([], function () {
     addBullet(meshes[0].position.x, meshes[0].position.y, meshes[0].rotation.y, 3);
   }
 
-  function get(){
+  function get() {
     return meshes[0];
   }
 
@@ -117,24 +120,24 @@ define([], function () {
     }];
   }
 
-  // function addTime(){
+  // function addTime() {
   //   timer += 10;
-  //   if(timer > 2000){
+  //   if (timer > 2000) {
   //     invincible = false;
   //     timer = 0;
   //     $('.death').css('display', 'none');
   //   }
   // }
 
-  function resetPos(){
-    meshes[0].position.x = meshes[0].position.y = velocity.dx = velocity.dy = 0;
-  }
+  // function resetPos() {
+  //   meshes[0].position.x = meshes[0].position.y = velocity.dx = velocity.dy = 0;
+  // }
 
   return {
     update:     update,
     init:       init,
     get:        get,
     getPlayerData: getPlayerData,
-    resetTimer: function(){timer = 0;}
+    resetTimer: function () { timer = 0; }
   };
 });
