@@ -1,0 +1,8 @@
+{
+  "name": "asteroids-game",
+  "version": "0.0.2",
+  "private": false,
+  "dependencies": {
+    "express": "3.0.4"
+  }
+}
